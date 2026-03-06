@@ -204,6 +204,11 @@ def scan_url(request: URLScanRequest):
 
         reasons = suspicious_features.copy()
 
+        if label == "phishing" or risk_level in ["CRITICAL", "HIGH", "MEDIUM"]:
+            if not reasons:
+                reasons.append("URL characters match known phishing signatures")
+            reasons.append(f"AI model confidence: {int(confidence * 100)}%")
+
         return ScanResponse(
             input_type="url",
             label=label,

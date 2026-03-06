@@ -87,10 +87,16 @@ TRUSTED_DOMAINS = {
     "figma.com",
     "vercel.com",
     "netlify.com",
-    "heroku.com",
     "satyammohanty.com",
     "claude.ai",
     "anthropic.com",
+    "hindustantimes.com",
+    "indiatimes.com",
+    "ndtv.com",
+    "indianexpress.com",
+    "thehindu.com",
+    "news18.com",
+    "firstpost.com",
 }
 
 
