@@ -1,0 +1,7 @@
+{"input": "https://claude.ai/chat/6ca25ecb-2fbd-40ac-8647-cf7c351446e4", "correct_label": "legitimate", "input_type": "url", "timestamp": "2026-03-05T17:37:29.550348+00:00"}
+{"input": "https://robu.in/", "correct_label": "legitimate", "input_type": "url", "timestamp": "2026-03-05T17:41:45.508628+00:00"}
+{"input": "email:Hi Satyam Mohanty,\nThis is a reminder th", "correct_label": "legitimate", "input_type": "email", "timestamp": "2026-03-05T17:56:42.686027+00:00"}
+{"input": "https://www.meta.ai/", "correct_label": "legitimate", "input_type": "url", "timestamp": "2026-03-05T18:16:54.107235+00:00"}
+{"input": "https://www.bing.com/search?q=Internet%20speed%20test&form=wspeed", "correct_label": "legitimate", "input_type": "url", "timestamp": "2026-03-06T06:12:03.532169+00:00"}
+{"input": "email:Share your experience\n\n\n\nSatyam, your sa", "correct_label": "legitimate", "input_type": "email", "timestamp": "2026-03-06T06:19:43.002336+00:00"}
+{"input": "https://claude.ai/new", "correct_label": "legitimate", "input_type": "url", "timestamp": "2026-03-06T07:02:23.301921+00:00"}

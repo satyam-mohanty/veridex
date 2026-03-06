@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans:
+    "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+
+:root {
+  --bg:             #F5F0E8;
+  --surface:        #EDE8DE;
+  --surface-hover:  #E5DFD3;
+  --border:         #D4CCBA;
+  --border-hover:   #B8AF9E;
+  --text-primary:   #2C2C24;
+  --text-secondary: #5C5848;
+  --text-tertiary:  #8C8470;
+  --accent:         #4A6741;
+  --accent-muted:   #7A9B76;
+  --accent-bg:      #D8E8D4;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+}
+
+::selection {
+  background-color: rgba(74, 103, 65, 0.18);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-hover);
+}
+
+*:focus-visible {
+  outline: 1.5px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
