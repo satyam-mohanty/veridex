@@ -1,0 +1,43 @@
+remote: error: GH013: Repository rule violations found for refs/heads/main.        
+remote: 
+remote: - GITHUB PUSH PROTECTION        
+remote:   —————————————————————————————————————————        
+remote:     Resolve the following violations before pushing again        
+remote: 
+remote:     - Push cannot contain secrets        
+remote: 
+remote:             
+remote:      (?) Learn how to resolve a blocked push        
+remote:      https://docs.github.com/code-security/secret-scanning/working-with-secret-scanning-and-push-protection/working-with-push-protection-from-the-command-line#resolving-a-blocked-push        
+remote:             
+remote:             
+remote:       —— Amazon AWS Access Key ID ——————————————————————————        
+remote:        locations:        
+remote:          - commit: 62cd7f43c59410a8054a527ace4da90c47dec821        
+remote:            path: veridex/data/malicious_url.csv:535681        
+remote:             
+remote:        (?) To push, remove secret from commit(s) or follow this URL to allow the secret.        
+remote:        https://github.com/satyam-mohanty/veridex/security/secret-scanning/unblock-secret/3AZCv5sKN6m8NLKgz3u7OL5iz01        
+remote:             
+remote:             
+remote:       —— Amazon AWS Secret Access Key ——————————————————————        
+remote:        locations:        
+remote:          - commit: 62cd7f43c59410a8054a527ace4da90c47dec821        
+remote:            path: veridex/data/malicious_url.csv:559944        
+remote:          - commit: 62cd7f43c59410a8054a527ace4da90c47dec821        
+remote:            path: veridex/data/malicious_url.csv:560093        
+remote:          - commit: 62cd7f43c59410a8054a527ace4da90c47dec821        
+remote:            path: veridex/data/malicious_url.csv:560334        
+remote:          - commit: 62cd7f43c59410a8054a527ace4da90c47dec821        
+remote:            path: veridex/data/malicious_url.csv:567255        
+remote:          - commit: 62cd7f43c59410a8054a527ace4da90c47dec821        
+remote:            path: veridex/data/malicious_url.csv:567454        
+remote:             
+remote:        (?) To push, remove secret from commit(s) or follow this URL to allow the secret.        
+remote:        https://github.com/satyam-mohanty/veridex/security/secret-scanning/unblock-secret/3AZCv3fJqRA8ExbVDYyGkzbq9R6        
+remote:             
+remote: 
+remote: 
+To https://github.com/satyam-mohanty/veridex.git
+ ! [remote rejected] main -> main (push declined due to repository rule violations)
+error: failed to push some refs to 'https://github.com/satyam-mohanty/veridex.git'

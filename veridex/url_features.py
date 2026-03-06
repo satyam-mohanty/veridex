@@ -62,6 +62,16 @@ def extract_url_features(url: str) -> dict:
         "ebayisapi",
         "secure",
         "account",
+        "free",
+        "winner",
+        "prize",
+        "claim",
+        "urgent",
+        "suspended",
+        "otp",
+        "blocked",
+        "bonus",
+        "reward",
     ]
     found_kws = []
     for kw in keywords:
@@ -75,9 +85,10 @@ def extract_url_features(url: str) -> dict:
         )
 
     features["hyphen_count"] = ext.domain.count("-")
-    if features["hyphen_count"] >= 2:
+    features["total_hyphens"] = hostname.count("-") if hostname else 0
+    if features["total_hyphens"] >= 2:
         suspicious_flags.append(
-            "Multiple hyphens in domain - used to fake legitimate brand names"
+            "Multiple hyphens in hostname - used to fake legitimate brand names"
         )
 
     shorteners = [
@@ -129,29 +140,43 @@ def compute_url_risk_score(features: dict) -> int:
     score = 0
 
     if f.get("has_ip_address", 0) == 1:
-        score += 25
+        score += 40
     if f.get("has_at_symbol", 0) == 1:
-        score += 20
+        score += 30
     if f.get("is_url_shortener", 0) == 1:
+        score += 35
+    if f.get("uses_https", 1) == 0:
         score += 15
 
     length = f.get("url_length", 0)
     if length > 75:
-        score += (
-            min(15, int((length - 75) * 0.2)) if int((length - 75) * 0.2) > 0 else 1
-        )
+        score += 15
+    elif length > 50:
+        score += 5
 
     if f.get("suspicious_tld", 0) == 1:
-        score += 10
+        score += 25
 
     kws = f.get("suspicious_keyword_count", 0)
-    score += min(15, kws * 3)
+    if kws > 0:
+        score += min(30, kws * 10)
 
     subs = f.get("subdomain_count", 0)
-    score += subs * 3
+    if subs >= 3:
+        score += 25
+    elif subs == 2:
+        score += 10
+
+    hyphens = f.get("total_hyphens", f.get("hyphen_count", 0))
+    if hyphens >= 3:
+        score += 20
+    elif hyphens == 2:
+        score += 10
+    elif hyphens == 1:
+        score += 5
 
     enc = f.get("encoded_char_count", 0)
-    score += enc * 2
+    score += min(15, enc * 3)
 
     return min(100, score)
 

@@ -11,7 +11,7 @@ if BASE_DIR not in sys.path:
 
 try:
     from predict import predict_email, predict_sms, predict_url
-    from url_features import extract_url_features
+    from url_features import extract_url_features, compute_url_risk_score
     from explainability import explain_email, explain_sms
 
     MODELS_LOADED = True
@@ -178,11 +178,25 @@ def scan_url(request: URLScanRequest):
 
         suspicious_features = result.get("suspicious_features", [])
 
+        heuristic_score = 0
         if not suspicious_features:
             extracted = extract_url_features(request.url)
             suspicious_features = extracted.get("suspicious_flags", [])
+            heuristic_score = compute_url_risk_score(extracted)
 
         risk_level, risk_score = determine_risk(label, confidence)
+
+        if heuristic_score > risk_score:
+            risk_score = heuristic_score
+            label = "phishing"
+            if risk_score >= 85:
+                risk_level = "CRITICAL"
+            elif risk_score >= 70:
+                risk_level = "HIGH"
+            elif risk_score >= 50:
+                risk_level = "MEDIUM"
+            else:
+                risk_level = "LOW"
 
         reasons = suspicious_features.copy()
 
