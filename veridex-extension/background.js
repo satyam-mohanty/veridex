@@ -148,6 +148,37 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
   }
 
+  if (message.type === "SCAN_URL_SILENT") {
+    (async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/scan/url", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url: message.url })
+        });
+        if (!response.ok) throw new Error(`Backend error: ${response.status}`);
+        const result = await response.json();
+        
+        // Update history
+        const local = await chrome.storage.local.get(["scan_history"]);
+        let history = local.scan_history || [];
+        history.unshift({
+          url: message.url,
+          risk_level: result.risk_level,
+          timestamp: Date.now()
+        });
+        if (history.length > 20) history = history.slice(0, 20);
+        await chrome.storage.local.set({ scan_history: history });
+        
+        sendResponse(result);
+      } catch (err) {
+        console.warn("Veridex SCAN_URL_SILENT error:", err.message);
+        sendResponse(null);
+      }
+    })();
+    return true;
+  }
+
   if (message.type === "SCAN_TEXT") {
     (async () => {
       try {

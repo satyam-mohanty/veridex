@@ -1,60 +1,61 @@
-
 .ps-pill {
-  display:        inline-flex !important;
-  align-items:    center !important;
-  gap:            5px !important;
-  height:         22px !important;
-  padding:        0 9px !important;
-  border-radius:  999px !important;
-  border:         1px solid transparent !important;
-  font-family:    'SF Mono', 'Fira Code', 'Consolas', monospace !important;
-  font-size:      11px !important;
-  font-weight:    700 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  height: 22px !important;
+  padding: 0 9px !important;
+  border-radius: 999px !important;
+  border: 1px solid transparent !important;
+  font-family: "SF Mono", "Fira Code", "Consolas", monospace !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
   letter-spacing: 0.03em !important;
-  cursor:         pointer !important;
-  user-select:    none !important;
-  white-space:    nowrap !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  white-space: nowrap !important;
   vertical-align: middle !important;
-  line-height:    1 !important;
+  line-height: 1 !important;
   text-decoration: none !important;
-  transition:     opacity 0.15s, transform 0.1s !important;
-  position:       relative !important;
-  z-index:        9990 !important;
-  box-sizing:     border-box !important;
-  margin-left:    6px !important;
-  flex-shrink:    0 !important;
+  transition:
+    opacity 0.15s,
+    transform 0.1s !important;
+  position: relative !important;
+  z-index: 9990 !important;
+  box-sizing: border-box !important;
+  margin-left: 6px !important;
+  flex-shrink: 0 !important;
 }
 
 .ps-pill:hover {
-  opacity:   0.82 !important;
+  opacity: 0.82 !important;
   transform: scale(0.96) !important;
 }
 
 .ps-pill--safe {
-  background:   rgba(34, 197, 94, 0.15) !important;
+  background: rgba(34, 197, 94, 0.15) !important;
   border-color: rgba(34, 197, 94, 0.45) !important;
-  color:        #166534 !important;
+  color: #166534 !important;
 }
 
 .ps-pill--warn {
-  background:   rgba(245, 158, 11, 0.15) !important;
+  background: rgba(245, 158, 11, 0.15) !important;
   border-color: rgba(245, 158, 11, 0.45) !important;
-  color:        #92400e !important;
+  color: #92400e !important;
 }
 
 .ps-pill--danger {
-  background:   rgba(239, 68, 68, 0.15) !important;
+  background: rgba(239, 68, 68, 0.15) !important;
   border-color: rgba(239, 68, 68, 0.45) !important;
-  color:        #991b1b !important;
+  color: #991b1b !important;
 }
 
 /* Status dot */
 .ps-dot {
-  display:       inline-block !important;
-  width:         7px !important;
-  height:        7px !important;
+  display: inline-block !important;
+  width: 7px !important;
+  height: 7px !important;
   border-radius: 50% !important;
-  flex-shrink:   0 !important;
+  flex-shrink: 0 !important;
 }
 
 /* Text label */
@@ -64,103 +65,243 @@
 
 /* ── Tooltip ─────────────────────────────────────────────────── */
 .ps-tooltip {
-  position:      fixed !important;
-  z-index:       999999 !important;
-  min-width:     220px !important;
-  max-width:     320px !important;
-  background:    #1c1c1e !important;
-  border:        1px solid rgba(255,255,255,0.1) !important;
+  position: fixed !important;
+  z-index: 999999 !important;
+  min-width: 220px !important;
+  max-width: 320px !important;
+  background: #1c1c1e !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   border-radius: 10px !important;
-  padding:       12px 14px !important;
-  box-shadow:    0 8px 32px rgba(0,0,0,0.5) !important;
-  font-family:   system-ui, -apple-system, sans-serif !important;
-  font-size:     13px !important;
-  color:         #e5e7eb !important;
-  animation:     ps-fadein 0.15s ease !important;
-  box-sizing:    border-box !important;
+  padding: 12px 14px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif !important;
+  font-size: 13px !important;
+  color: #e5e7eb !important;
+  animation: ps-fadein 0.15s ease !important;
+  box-sizing: border-box !important;
 }
 
 @keyframes ps-fadein {
-  from { opacity: 0; transform: translateY(-4px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Tooltip header row */
 .ps-tooltip-header {
-  display:       flex !important;
-  align-items:   center !important;
-  gap:           7px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
   margin-bottom: 10px !important;
 }
 
 .ps-tooltip-dot {
-  width:         9px !important;
-  height:        9px !important;
+  width: 9px !important;
+  height: 9px !important;
   border-radius: 50% !important;
-  flex-shrink:   0 !important;
+  flex-shrink: 0 !important;
 }
 
 .ps-tooltip-risk {
-  font-weight:    700 !important;
-  font-size:      13px !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
   text-transform: uppercase !important;
   letter-spacing: 0.05em !important;
-  color:          #f9fafb !important;
+  color: #f9fafb !important;
 }
 
 .ps-tooltip-conf {
   margin-left: auto !important;
-  font-size:   11px !important;
-  color:       #9ca3af !important;
-  font-family: 'SF Mono', 'Consolas', monospace !important;
+  font-size: 11px !important;
+  color: #9ca3af !important;
+  font-family: "SF Mono", "Consolas", monospace !important;
 }
 
 /* Reasons list */
 .ps-tooltip-reasons {
-  list-style:    disc !important;
-  padding-left:  18px !important;
-  margin:        0 0 10px 0 !important;
-  display:       flex !important;
+  list-style: disc !important;
+  padding-left: 18px !important;
+  margin: 0 0 10px 0 !important;
+  display: flex !important;
   flex-direction: column !important;
-  gap:           4px !important;
+  gap: 4px !important;
 }
 
 .ps-tooltip-reasons li {
-  font-size:   12px !important;
-  color:       #d1d5db !important;
+  font-size: 12px !important;
+  color: #d1d5db !important;
   line-height: 1.4 !important;
 }
 
 .ps-tooltip-none {
-  font-size:  12px !important;
-  color:      #9ca3af !important;
-  margin:     0 0 10px 0 !important;
+  font-size: 12px !important;
+  color: #9ca3af !important;
+  margin: 0 0 10px 0 !important;
   font-style: italic !important;
 }
 
 /* Mark as Safe button */
 .ps-mark-safe-btn {
-  display:       block !important;
-  width:         100% !important;
-  margin-top:    8px !important;
-  padding:       6px 12px !important;
-  background:    rgba(255,255,255,0.07) !important;
-  border:        1px solid rgba(255,255,255,0.15) !important;
+  display: block !important;
+  width: 100% !important;
+  margin-top: 8px !important;
+  padding: 6px 12px !important;
+  background: rgba(255, 255, 255, 0.07) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
   border-radius: 6px !important;
-  color:         #e5e7eb !important;
-  font-size:     12px !important;
-  font-weight:   500 !important;
-  cursor:        pointer !important;
-  text-align:    center !important;
-  transition:    background 0.15s !important;
-  box-sizing:    border-box !important;
+  color: #e5e7eb !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  text-align: center !important;
+  transition: background 0.15s !important;
+  box-sizing: border-box !important;
 }
 
 .ps-mark-safe-btn:hover:not(:disabled) {
-  background: rgba(255,255,255,0.14) !important;
+  background: rgba(255, 255, 255, 0.14) !important;
 }
 
 .ps-mark-safe-btn:disabled {
-  cursor:  default !important;
+  cursor: default !important;
   opacity: 0.5 !important;
+}
+
+/* ── Global Link Scanning ────────────────────────────────────────────── */
+.veridex-link-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 10px !important;
+  font-weight: bold !important;
+  width: 18px !important;
+  height: 18px !important;
+  border-radius: 50% !important;
+  border: 2px solid transparent !important;
+  vertical-align: middle !important;
+  margin-left: 4px !important;
+  cursor: pointer !important;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif !important;
+  line-height: 1 !important;
+  user-select: none !important;
+  box-sizing: border-box !important;
+  transition: transform 0.1s ease !important;
+}
+
+.veridex-link-icon:hover {
+  transform: scale(1.15) !important;
+}
+
+.veridex-link-safe {
+  color: #22c55e !important;
+  border-color: #22c55e !important;
+  background: rgba(34, 197, 94, 0.25) !important;
+}
+
+.veridex-link-caution {
+  color: #f59e0b !important;
+  border-color: #f59e0b !important;
+  background: rgba(245, 158, 11, 0.25) !important;
+}
+
+.veridex-link-danger {
+  color: #ef4444 !important;
+  border-color: #ef4444 !important;
+  background: rgba(239, 68, 68, 0.25) !important;
+}
+
+.veridex-link-tooltip {
+  position: fixed !important;
+  z-index: 999999 !important;
+  background: #1c1c1e !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 8px !important;
+  padding: 10px 14px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif !important;
+  font-size: 12px !important;
+  color: #e5e7eb !important;
+  animation: ps-fadein 0.15s ease !important;
+  box-sizing: border-box !important;
+  pointer-events: auto !important;
+}
+
+.veridex-link-tooltip-header {
+  font-weight: 600 !important;
+  margin-bottom: 6px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 12px !important;
+  font-size: 13px !important;
+}
+
+.veridex-link-tooltip-reasons {
+  margin: 0 !important;
+  padding-left: 18px !important;
+  color: #d1d5db !important;
+  list-style: disc !important;
+}
+
+.veridex-link-tooltip-reasons li {
+  line-height: 1.4 !important;
+  margin-bottom: 2px !important;
+}
+
+/* ── WhatsApp Web Badges ─────────────────────────────────────────────── */
+.veridex-wa-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0 !important;
+  font-size: 11px !important;
+  font-weight: bold !important;
+  width: 16px !important;
+  height: 16px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  margin-top: 4px !important;
+  margin-bottom: 2px !important;
+  position: relative !important;
+  z-index: 10 !important;
+  box-sizing: border-box !important;
+  pointer-events: auto !important;
+}
+
+.veridex-wa-safe {
+  background: rgba(34, 197, 94, 0.1) !important;
+  border: 1.5px solid #22c55e !important;
+  color: #22c55e !important;
+}
+
+.veridex-wa-caution {
+  background: rgba(245, 158, 11, 0.1) !important;
+  border: 1.5px solid #f59e0b !important;
+  color: #f59e0b !important;
+}
+
+.veridex-wa-danger {
+  background: rgba(239, 68, 68, 0.1) !important;
+  border: 1.5px solid #ef4444 !important;
+  color: #ef4444 !important;
 }

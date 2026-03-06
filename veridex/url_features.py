@@ -52,7 +52,7 @@ def extract_url_features(url: str) -> dict:
     keywords = [
         "login",
         "signin",
-        "verify",
+        "verif",
         "update",
         "banking",
         "confirm",
@@ -61,6 +61,7 @@ def extract_url_features(url: str) -> dict:
         "webscr",
         "ebayisapi",
         "secure",
+        "security",
         "account",
         "free",
         "winner",
@@ -72,6 +73,21 @@ def extract_url_features(url: str) -> dict:
         "blocked",
         "bonus",
         "reward",
+        "appleid",
+        "paypal",
+        "paypa1",
+        "microsoft",
+        "amazon",
+        "netflix",
+        "bankofamerica",
+        "chase",
+        "wellsfargo",
+        "support",
+        "billing",
+        "service",
+        "helpdesk",
+        "auth",
+        "validation",
     ]
     found_kws = []
     for kw in keywords:
@@ -158,22 +174,26 @@ def compute_url_risk_score(features: dict) -> int:
         score += 25
 
     kws = f.get("suspicious_keyword_count", 0)
-    if kws > 0:
-        score += min(30, kws * 10)
+    if kws >= 3:
+        score += 45
+    elif kws == 2:
+        score += 30
+    elif kws == 1:
+        score += 15
 
     subs = f.get("subdomain_count", 0)
     if subs >= 3:
-        score += 25
+        score += 35
     elif subs == 2:
-        score += 10
+        score += 20
 
     hyphens = f.get("total_hyphens", f.get("hyphen_count", 0))
     if hyphens >= 3:
-        score += 20
+        score += 40
     elif hyphens == 2:
-        score += 10
+        score += 25
     elif hyphens == 1:
-        score += 5
+        score += 10
 
     enc = f.get("encoded_char_count", 0)
     score += min(15, enc * 3)

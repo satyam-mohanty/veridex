@@ -179,10 +179,14 @@ def scan_url(request: URLScanRequest):
         suspicious_features = result.get("suspicious_features", [])
 
         heuristic_score = 0
-        if not suspicious_features:
-            extracted = extract_url_features(request.url)
-            suspicious_features = extracted.get("suspicious_flags", [])
-            heuristic_score = compute_url_risk_score(extracted)
+        extracted = extract_url_features(request.url)
+        heuristic_flags = extracted.get("suspicious_flags", [])
+
+        for flag in heuristic_flags:
+            if flag not in suspicious_features:
+                suspicious_features.append(flag)
+
+        heuristic_score = compute_url_risk_score(extracted)
 
         risk_level, risk_score = determine_risk(label, confidence)
 
