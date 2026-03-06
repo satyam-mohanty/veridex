@@ -1,102 +1,161 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="popup.css">
-  <title>Veridex</title>
-</head>
-<body>
-  <div id="app">
-    <!-- Brand Header -->
-    <div style="display:flex; align-items:center; gap:10px; padding:14px 16px; background:var(--accent); border-bottom:1px solid rgba(0,0,0,0.12);">
-      <img src="../icons/icon48.png" style="width:28px;height:28px;border-radius:5px;" alt="Veridex">
-      <span style="font-size:18px;font-weight:700;color:#fff;letter-spacing:0.02em;">Veridex</span>
-      <span style="margin-left:auto; font-size:12px; color:rgba(255,255,255,0.65); font-weight:500; letter-spacing:0.04em; text-transform:uppercase;">AI Threat Shield</span>
-    </div>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="popup.css" />
+    <title>Veridex</title>
+  </head>
+  <body>
+    <div id="app">
+      <!-- Brand Header -->
+      <div
+        style="
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 14px 16px;
+          background: var(--accent);
+          border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+        "
+      >
+        <img
+          src="../icons/icon48.png"
+          style="width: 28px; height: 28px; border-radius: 5px"
+          alt="Veridex"
+        />
+        <span
+          style="
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.02em;
+          "
+          >Veridex</span
+        >
+        <span
+          style="
+            margin-left: auto;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.65);
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+          "
+          >AI Threat Shield</span
+        >
+      </div>
 
-    <!-- Connection Status -->
-    <div id="connection-status">
-      <span id="connection-dot"></span>
-      <span id="connection-text">Checking Backend...</span>
-    </div>
+      <!-- Connection Status -->
+      <div id="connection-status">
+        <span id="connection-dot"></span>
+        <span id="connection-text">Checking Backend...</span>
+      </div>
 
-    <!-- SECTION 1: Current Page -->
-    <div id="section-current-page" class="section active">
-      <div class="header">Current Page</div>
-      <div id="current-url" class="truncate">Checking...</div>
+      <!-- SECTION 1: Current Page -->
+      <div id="section-current-page" class="section active">
+        <div class="header">Current Page</div>
+        <div id="current-url" class="truncate">Checking...</div>
 
-      <div id="scan-result" style="display: none;">
-        <div id="risk-badge" class="risk-badge">LOW</div>
+        <div id="scan-result" style="display: none">
+          <div id="risk-badge" class="risk-badge">LOW</div>
 
-        <div class="score-container">
-          <div class="score-labels">
-            <span>Risk Score</span>
-            <span id="score-value">0%</span>
+          <div class="score-container">
+            <div class="score-labels">
+              <span>Risk Score</span>
+              <span id="score-value">0%</span>
+            </div>
+            <div class="progress-bar">
+              <div id="score-progress" class="progress-fill"></div>
+            </div>
           </div>
-          <div class="progress-bar">
-            <div id="score-progress" class="progress-fill"></div>
+
+          <div class="confidence">
+            Confidence: <span id="confidence-value">0%</span>
+          </div>
+
+          <div class="reasons-toggle" id="reasons-toggle">
+            Why? <span>▼</span>
+          </div>
+          <div id="reasons-list" class="reasons-list"></div>
+
+          <div id="warning-bar" class="warning-bar" style="display: none">
+            THIS SITE MAY BE DANGEROUS
+          </div>
+
+          <button
+            id="mark-safe-btn"
+            class="mark-safe-btn"
+            style="display: none"
+          >
+            Mark as Safe
+          </button>
+          <div id="mark-safe-msg" class="mark-safe-msg" style="display: none">
+            ✓ Reported as safe. Thank you!
           </div>
         </div>
 
-        <div class="confidence">Confidence: <span id="confidence-value">0%</span></div>
+        <div id="scan-loading" class="spinner"></div>
+        <div id="scan-empty" style="display: none">
+          No scan data for this tab. It may be an internal page or skipped.
+        </div>
+      </div>
 
-        <div class="reasons-toggle" id="reasons-toggle">Why? <span>▼</span></div>
-        <div id="reasons-list" class="reasons-list"></div>
+      <div class="divider"></div>
 
-        <div id="warning-bar" class="warning-bar" style="display: none;">
-          THIS SITE MAY BE DANGEROUS
+      <!-- SECTION 2: Manual Scan -->
+      <div id="section-manual-scan" class="section">
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="url">URL</button>
+          <button class="tab-btn" data-tab="email">Email</button>
+          <button class="tab-btn" data-tab="sms">SMS</button>
         </div>
 
-        <button id="mark-safe-btn" class="mark-safe-btn" style="display: none;">Mark as Safe</button>
-        <div id="mark-safe-msg" class="mark-safe-msg" style="display: none;">✓ Reported as safe. Thank you!</div>
-      </div>
+        <textarea
+          id="manual-input"
+          placeholder="Paste URL here to scan..."
+        ></textarea>
+        <button id="manual-scan-btn">Scan</button>
 
-      <div id="scan-loading" class="spinner"></div>
-      <div id="scan-empty" style="display: none;">No scan data for this tab. It may be an internal page or skipped.</div>
-    </div>
-
-    <div class="divider"></div>
-
-    <!-- SECTION 2: Manual Scan -->
-    <div id="section-manual-scan" class="section">
-      <div class="tabs">
-        <button class="tab-btn active" data-tab="url">URL</button>
-        <button class="tab-btn" data-tab="email">Email</button>
-        <button class="tab-btn" data-tab="sms">SMS</button>
-      </div>
-
-      <textarea id="manual-input" placeholder="Paste URL here to scan..."></textarea>
-      <button id="manual-scan-btn">Scan</button>
-
-      <div id="manual-scan-result" style="display: none;">
-        <div id="manual-risk-badge" class="risk-badge">LOW</div>
-        <div class="score-container">
-          <div class="score-labels">
-            <span>Risk Score</span>
-            <span id="manual-score-value">0%</span>
+        <div id="manual-scan-result" style="display: none">
+          <div id="manual-risk-badge" class="risk-badge">LOW</div>
+          <div class="score-container">
+            <div class="score-labels">
+              <span>Risk Score</span>
+              <span id="manual-score-value">0%</span>
+            </div>
+            <div class="progress-bar">
+              <div id="manual-score-progress" class="progress-fill"></div>
+            </div>
           </div>
-          <div class="progress-bar">
-            <div id="manual-score-progress" class="progress-fill"></div>
+          <div class="reasons-toggle" id="manual-reasons-toggle">
+            Why? <span>▼</span>
           </div>
+          <div id="manual-reasons-list" class="reasons-list"></div>
         </div>
-        <div class="reasons-toggle" id="manual-reasons-toggle">Why? <span>▼</span></div>
-        <div id="manual-reasons-list" class="reasons-list"></div>
+        <div
+          id="manual-scan-loading"
+          class="spinner"
+          style="display: none"
+        ></div>
       </div>
-      <div id="manual-scan-loading" class="spinner" style="display: none;"></div>
+
+      <div class="divider"></div>
+
+      <!-- SECTION 3: Recent History -->
+      <div id="section-history" class="section">
+        <div class="history-toggle" id="history-toggle">
+          Recent Scans (last 5) <span>▼</span>
+        </div>
+        <div id="history-list" class="history-list expanded"></div>
+      </div>
     </div>
 
-    <div class="divider"></div>
-
-    <!-- SECTION 3: Recent History -->
-    <div id="section-history" class="section">
-      <div class="history-toggle" id="history-toggle">Recent Scans (last 5) <span>▼</span></div>
-      <div id="history-list" class="history-list expanded"></div>
-    </div>
-  </div>
-
-  <script src="popup.js"></script>
-</body>
+    <script src="popup.js"></script>
+  </body>
 </html>

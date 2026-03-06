@@ -64,7 +64,7 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
         iconUrl: "icons/icon48.png", 
         title: "⚠ Veridex: Suspicious Site Detected",
         message: `Risk Level: ${result.risk_level}\n${reasonsText}`,
-        requireInteraction: true
+        requireInteraction: false
       });
     }
 

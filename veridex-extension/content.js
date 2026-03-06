@@ -487,7 +487,10 @@ function scanWhatsApp() {
     
     text = text.trim();
 
-    if (text.length < 10) {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const urls = text.match(urlRegex) || [];
+
+    if (text.length < 10 || urls.length === 0) {
       msg.dataset.veridexScanned = "true";
       continue;
     }
@@ -501,9 +504,6 @@ function scanWhatsApp() {
         injectWABadge(msg, resp.data, text);
       }
     });
-
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    const urls = text.match(urlRegex) || [];
     const uniqueWUrls = [...new Set(urls)];
     uniqueWUrls.forEach(url => {
       enqueueScan(() => {

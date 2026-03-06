@@ -17,7 +17,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const upper = level.toUpperCase();
     return colors[upper] || colors.UNKNOWN;
   }
-
   const connDot = document.getElementById("connection-dot");
   const connText = document.getElementById("connection-text");
   const manBtn = document.getElementById("manual-scan-btn");

@@ -89,6 +89,8 @@ TRUSTED_DOMAINS = {
     "netlify.com",
     "heroku.com",
     "satyammohanty.com",
+    "claude.ai",
+    "anthropic.com",
 }
 
 
