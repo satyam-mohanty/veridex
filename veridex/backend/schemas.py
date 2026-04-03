@@ -14,6 +14,10 @@ class URLScanRequest(BaseModel):
     url: str = Field(..., min_length=3, description="The URL to scan")
 
 
+class ReviewScanRequest(BaseModel):
+    text: str = Field(..., min_length=5, description="The e-commerce review content to scan")
+
+
 class ScanResponse(BaseModel):
     input_type: str
     label: str
@@ -23,6 +27,20 @@ class ScanResponse(BaseModel):
     reasons: List[str]
     top_keywords: Optional[List[str]] = []
     explanation: Optional[List[Dict[str, Any]]] = None
+    scan_timestamp: str
+
+
+class URLChainResponse(BaseModel):
+    redirect_count: int
+    redirect_chain: List[str]
+    final_url: str
+    final_url_safe: bool
+    input_type: str
+    label: str
+    confidence: float
+    risk_level: str
+    risk_score: int
+    reasons: List[str]
     scan_timestamp: str
 
 

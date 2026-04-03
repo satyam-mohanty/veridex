@@ -1,3 +1,51 @@
+// Trusted root domains that should always be marked safe
+const TRUSTED_DOMAINS = new Set([
+  "google.com", "google.co.in", "google.co.uk", "google.com.au",
+  "github.com", "githubusercontent.com",
+  "microsoft.com", "live.com", "outlook.com", "office.com", "office365.com", "azure.com",
+  "apple.com", "icloud.com",
+  "amazon.com", "amazon.in", "amazonaws.com",
+  "flipkart.com", "netflix.com",
+  "youtube.com", "youtu.be",
+  "facebook.com", "fb.com", "instagram.com",
+  "twitter.com", "x.com", "linkedin.com",
+  "wikipedia.org", "stackoverflow.com", "reddit.com",
+  "twitch.tv", "spotify.com", "dropbox.com",
+  "paypal.com", "ebay.com", "walmart.com",
+  "adobe.com", "cloudflare.com",
+  "npmjs.com", "pypi.org", "mozilla.org",
+  "whatsapp.com", "discord.com", "slack.com",
+  "zoom.us", "notion.so", "figma.com",
+  "vercel.com", "netlify.com",
+  "satyammohanty.com", "claude.ai", "anthropic.com",
+  "hindustantimes.com", "indiatimes.com", "ndtv.com",
+  "indianexpress.com", "thehindu.com", "news18.com", "firstpost.com",
+]);
+
+function extractRootDomain(url) {
+  try {
+    const hostname = new URL(url).hostname;
+    const parts = hostname.split(".");
+    if (parts.length >= 2) {
+      // Handle two-part TLDs like .co.in, .co.uk, .com.au
+      const twoPartTLDs = ["co.in", "co.uk", "com.au", "co.jp", "co.kr", "org.in"];
+      const lastTwo = parts.slice(-2).join(".");
+      const lastThree = parts.length >= 3 ? parts.slice(-3).join(".") : null;
+      for (const tld of twoPartTLDs) {
+        if (lastTwo === tld && parts.length >= 3) {
+          return parts.slice(-3).join(".");
+        }
+      }
+      return lastTwo;
+    }
+    return hostname;
+  } catch { return ""; }
+}
+
+function isTrustedUrl(url) {
+  return TRUSTED_DOMAINS.has(extractRootDomain(url));
+}
+
 chrome.webNavigation.onCompleted.addListener(async (details) => {
   if (details.frameId !== 0) return;
 
@@ -14,8 +62,27 @@ chrome.webNavigation.onCompleted.addListener(async (details) => {
     return;
   }
 
+  // Skip backend scan for trusted domains — mark as safe immediately
+  if (isTrustedUrl(url)) {
+    const trustedResult = {
+      risk_level: "LOW",
+      risk_score: 5,
+      label: "legitimate",
+      confidence: 0.99,
+      reasons: [],
+      redirect_count: 0,
+      redirect_chain: [url],
+      final_url: url,
+      final_url_safe: true,
+    };
+    await chrome.storage.session.set({ [details.tabId]: trustedResult });
+    chrome.action.setBadgeText({ text: "✓", tabId: details.tabId });
+    chrome.action.setBadgeBackgroundColor({ color: "#22c55e", tabId: details.tabId });
+    return;
+  }
+
   try {
-    const response = await fetch("http://127.0.0.1:8000/scan/url", {
+    const response = await fetch("http://127.0.0.1:8000/scan/url/chain", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ url: url })
@@ -151,7 +218,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "SCAN_URL_SILENT") {
     (async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/scan/url", {
+        const response = await fetch("http://127.0.0.1:8000/scan/url/chain", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ url: message.url })
@@ -182,7 +249,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "SCAN_TEXT") {
     (async () => {
       try {
-        const endpoint = message.scanType === "email" ? "/scan/email" : "/scan/sms";
+        let endpoint = "/scan/email";
+        if (message.scanType === "sms") endpoint = "/scan/sms";
+        if (message.scanType === "review") endpoint = "/scan/review";
+
         const response = await fetch(`http://127.0.0.1:8000${endpoint}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },

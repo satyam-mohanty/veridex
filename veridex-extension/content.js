@@ -254,18 +254,33 @@ function injectLinkIcon(a, result) {
   const risk = (result.risk_level || "LOW").toUpperCase();
   const confidence = Math.round((result.confidence || 0) * 100);
   const reasons = (result.reasons || []).slice(0, 2);
+  const redirectCount = result.redirect_count || 0;
+  const finalUrlSafe = result.final_url_safe !== undefined ? result.final_url_safe : (risk === "LOW" || risk === "SAFE");
+  const redirectChain = result.redirect_chain || [];
 
   let iconText, iconClass, titleText, color;
-  if (risk === "CRITICAL" || risk === "HIGH" || risk === "PHISHING" || risk === "MALWARE") {
-    iconText = "✗"; iconClass = "veridex-link-danger"; titleText = "Veridex: Dangerous link \u2014 do not click"; color="#ef4444";
-  } else if (risk === "MEDIUM" || risk === "MODERATE" || risk === "SUSPICIOUS") {
-    iconText = "⚠"; iconClass = "veridex-link-caution"; titleText = "Veridex: Proceed with caution"; color="#f59e0b";
+
+  if (redirectCount === 0) {
+    // No redirects
+    if (risk === "CRITICAL" || risk === "HIGH" || risk === "PHISHING" || risk === "MALWARE") {
+      iconText = "✗"; iconClass = "veridex-link-danger"; titleText = "Veridex: Dangerous link"; color = "#ef4444";
+    } else if (risk === "MEDIUM" || risk === "MODERATE" || risk === "SUSPICIOUS") {
+      iconText = "⚠"; iconClass = "veridex-link-caution"; titleText = "Veridex: Proceed with caution"; color = "#f59e0b";
+    } else {
+      iconText = "✓"; iconClass = "veridex-link-safe"; titleText = "Veridex: Safe link — no redirects"; color = "#22c55e";
+    }
   } else {
-    iconText = "✓"; iconClass = "veridex-link-safe"; titleText = "Veridex: Safe link"; color="#22c55e";
+    // Has redirects — show icon + count
+    if (finalUrlSafe) {
+      iconText = "✓" + redirectCount; iconClass = "veridex-link-safe"; titleText = `Veridex: ${redirectCount} redirect(s), final URL is safe`; color = "#22c55e";
+    } else {
+      iconText = "✗" + redirectCount; iconClass = "veridex-link-danger"; titleText = `Veridex: ${redirectCount} redirect(s), final URL is NOT safe`; color = "#ef4444";
+    }
   }
 
   const span = document.createElement("span");
-  span.className = `veridex-link-icon ${iconClass}`;
+  const hasPill = redirectCount > 0;
+  span.className = `veridex-link-icon ${iconClass}${hasPill ? " veridex-link-icon--pill" : ""}`;
   span.textContent = iconText;
   span.title = titleText;
 
@@ -283,6 +298,29 @@ function injectLinkIcon(a, result) {
     hdr.innerHTML = `<span style="color:${color}">${risk}</span><span style="font-weight:normal;color:#9ca3af">${confidence}% confidence</span>`;
     tip.appendChild(hdr);
 
+    // Redirect info section
+    if (redirectCount > 0) {
+      const rDiv = document.createElement("div");
+      rDiv.className = "veridex-link-tooltip-redirects";
+      rDiv.innerHTML = `<span style="font-weight:600;color:${finalUrlSafe ? '#22c55e' : '#ef4444'}">${redirectCount} redirect${redirectCount > 1 ? 's' : ''}</span>` +
+        `<span style="color:#9ca3af;margin-left:6px">→ final URL ${finalUrlSafe ? 'is safe' : 'is NOT safe'}</span>`;
+      tip.appendChild(rDiv);
+
+      if (redirectChain.length > 0) {
+        const chainDiv = document.createElement("div");
+        chainDiv.className = "veridex-link-tooltip-chain";
+        redirectChain.forEach((url, i) => {
+          const row = document.createElement("div");
+          row.className = "veridex-chain-row";
+          const isLast = i === redirectChain.length - 1;
+          row.innerHTML = `<span style="color:${isLast ? (finalUrlSafe ? '#22c55e' : '#ef4444') : '#9ca3af'}">${i === 0 ? '●' : '→'}</span> ` +
+            `<span class="veridex-chain-url" title="${url}">${url.length > 50 ? url.substring(0, 47) + '...' : url}</span>`;
+          chainDiv.appendChild(row);
+        });
+        tip.appendChild(chainDiv);
+      }
+    }
+
     if (reasons.length > 0) {
       const ul = document.createElement("ul");
       ul.className = "veridex-link-tooltip-reasons";
@@ -292,7 +330,7 @@ function injectLinkIcon(a, result) {
         ul.appendChild(li);
       });
       tip.appendChild(ul);
-    } else {
+    } else if (redirectCount === 0) {
       const p = document.createElement("div");
       p.style.fontSize = "11px";
       p.style.color = "#9ca3af";
@@ -387,18 +425,30 @@ function injectWABadge(msgContainer, result, fullText) {
   const risk = (result.risk_level || "LOW").toUpperCase();
   const confidence = Math.round((result.confidence || 0) * 100);
   const reasons = (result.reasons || []).slice(0, 3);
+  const redirectCount = result.redirect_count || 0;
+  const finalUrlSafe = result.final_url_safe !== undefined ? result.final_url_safe : (risk === "LOW" || risk === "SAFE");
+  const redirectChain = result.redirect_chain || [];
   
   let dotColor, pillText, pillClass;
-  if (risk === "CRITICAL" || risk === "HIGH" || risk === "MALWARE" || risk === "PHISHING") {
-    pillText = "✗"; pillClass = "veridex-wa-danger"; dotColor = "#ef4444";
-  } else if (risk === "MEDIUM" || risk === "MODERATE" || risk === "SUSPICIOUS") {
-    pillText = "⚠"; pillClass = "veridex-wa-caution"; dotColor = "#f59e0b";
+  if (redirectCount === 0) {
+    if (risk === "CRITICAL" || risk === "HIGH" || risk === "MALWARE" || risk === "PHISHING") {
+      pillText = "✗"; pillClass = "veridex-wa-danger"; dotColor = "#ef4444";
+    } else if (risk === "MEDIUM" || risk === "MODERATE" || risk === "SUSPICIOUS") {
+      pillText = "⚠"; pillClass = "veridex-wa-caution"; dotColor = "#f59e0b";
+    } else {
+      pillText = "✓"; pillClass = "veridex-wa-safe"; dotColor = "#22c55e";
+    }
   } else {
-    pillText = "✓"; pillClass = "veridex-wa-safe"; dotColor = "#22c55e";
+    if (finalUrlSafe) {
+      pillText = "✓" + redirectCount; pillClass = "veridex-wa-safe"; dotColor = "#22c55e";
+    } else {
+      pillText = "✗" + redirectCount; pillClass = "veridex-wa-danger"; dotColor = "#ef4444";
+    }
   }
   
   const badge = document.createElement("div");
-  badge.className = `veridex-wa-badge ${pillClass}`;
+  const hasPill = redirectCount > 0;
+  badge.className = `veridex-wa-badge ${pillClass}${hasPill ? " veridex-wa-badge--pill" : ""}`;
   badge.textContent = pillText;
   
   badge.addEventListener("click", (e) => {
@@ -417,6 +467,29 @@ function injectWABadge(msgContainer, result, fullText) {
       `<span class="ps-tooltip-conf">${confidence}% confidence</span>`;
     tip.appendChild(hdr);
 
+    // Redirect info section for WhatsApp
+    if (redirectCount > 0) {
+      const rDiv = document.createElement("div");
+      rDiv.style.cssText = "margin-bottom:8px;font-size:12px;";
+      rDiv.innerHTML = `<span style="font-weight:600;color:${finalUrlSafe ? '#22c55e' : '#ef4444'}">${redirectCount} redirect${redirectCount > 1 ? 's' : ''}</span>` +
+        `<span style="color:#9ca3af;margin-left:6px">→ final URL ${finalUrlSafe ? 'is safe' : 'is NOT safe'}</span>`;
+      tip.appendChild(rDiv);
+
+      if (redirectChain.length > 0) {
+        const chainDiv = document.createElement("div");
+        chainDiv.className = "veridex-link-tooltip-chain";
+        redirectChain.forEach((url, i) => {
+          const row = document.createElement("div");
+          row.className = "veridex-chain-row";
+          const isLast = i === redirectChain.length - 1;
+          row.innerHTML = `<span style="color:${isLast ? (finalUrlSafe ? '#22c55e' : '#ef4444') : '#9ca3af'}">${i === 0 ? '●' : '→'}</span> ` +
+            `<span class="veridex-chain-url" title="${url}">${url.length > 40 ? url.substring(0, 37) + '...' : url}</span>`;
+          chainDiv.appendChild(row);
+        });
+        tip.appendChild(chainDiv);
+      }
+    }
+
     if (reasons.length > 0) {
       const ul = document.createElement("ul");
       ul.className = "ps-tooltip-reasons";
@@ -426,7 +499,7 @@ function injectWABadge(msgContainer, result, fullText) {
         ul.appendChild(li);
       });
       tip.appendChild(ul);
-    } else {
+    } else if (redirectCount === 0) {
       const p = document.createElement("p");
       p.className = "ps-tooltip-none";
       p.textContent = "No specific suspicious signals.";
@@ -498,12 +571,8 @@ function scanWhatsApp() {
     msg.dataset.veridexScanned = "pending";
     
     if (!isContextAlive()) return;
-    chrome.runtime.sendMessage({ type: "SCAN_TEXT", text: text, scanType: "sms" }, (resp) => {
-      msg.dataset.veridexScanned = "true";
-      if (resp && resp.success) {
-        injectWABadge(msg, resp.data, text);
-      }
-    });
+    // Skip SMS text badge for messages with URLs — the per-link icons handle it
+    msg.dataset.veridexScanned = "true";
     const uniqueWUrls = [...new Set(urls)];
     uniqueWUrls.forEach(url => {
       enqueueScan(() => {
@@ -525,6 +594,110 @@ function scanWhatsApp() {
   }
 }
 
+/* ── E-Commerce Review Scanner ── */
+
+function injectReviewBadge(container, result, text) {
+  const isFake = result.label === "fake" || result.risk_level === "HIGH" || result.risk_level === "CRITICAL";
+  
+  const pillText = isFake ? "Fake" : "Genuine";
+  const bgColor = isFake ? "#ef4444" : "#22c55e";
+
+  const badge = document.createElement("span");
+  badge.setAttribute("data-veridex-review-badge", "true");
+  badge.style.display = "inline-flex";
+  badge.style.alignItems = "center";
+  badge.style.backgroundColor = bgColor;
+  badge.style.color = "white";
+  badge.style.padding = "2px 8px";
+  badge.style.borderRadius = "12px";
+  badge.style.fontSize = "12px";
+  badge.style.fontWeight = "bold";
+  badge.style.marginLeft = "8px";
+  badge.style.verticalAlign = "middle";
+  badge.style.lineHeight = "1.4";
+  badge.title = `Veridex Confidence: ${Math.round(result.confidence * 100)}%`;
+  badge.innerHTML = `<span style="margin-right: 4px;">${isFake ? '✗' : '✓'}</span><span>${pillText} review</span>`;
+
+  // Generic and specific author selectors (Amazon, Flipkart, etc)
+  const profileName = container.querySelector(
+    '.a-profile-name, a.a-profile-content, [data-hook="genome-widget"], [itemprop="author"], .yotpo-user-name, p._2sc7ZR, p._2NsDsF'
+  );
+  if (profileName && !profileName.parentNode.querySelector('[data-veridex-review-badge]')) {
+    profileName.parentNode.insertBefore(badge, profileName.nextSibling);
+  } else {
+    // Fallback: prepend at the top of the review container
+    const firstChild = container.firstChild;
+    if (firstChild && !container.querySelector('[data-veridex-review-badge]')) {
+      container.insertBefore(badge, firstChild.nextSibling);
+    }
+  }
+}
+
+function scanEcommerceReviews() {
+  // Broad selectors to capture Amazon, Flipkart, Shopify (Yotpo/Judge.me), and general generic formats
+  const reviewSelectors = [
+    '[data-hook="review"]', 
+    '.a-section.review', 
+    '.review', 
+    '[itemprop="review"]',
+    '.yotpo-review',
+    '.jdgm-rev',
+    // Flipkart review blocks
+    'div.col._2wzgFH',
+    'div.RcXBOT',
+    'div.EKr0ww'
+  ];
+  
+  const reviewBlocks = document.querySelectorAll(reviewSelectors.join(', '));
+
+  for (const block of reviewBlocks) {
+    if (block.dataset.veridexScanned) continue;
+    // Skip if already has a badge
+    if (block.querySelector('[data-veridex-review-badge]')) {
+      block.dataset.veridexScanned = "true";
+      continue;
+    }
+
+    // Extract review text from the body inside this block
+    const textSelectors = [
+      '[data-hook="review-body"]', 
+      '.review-text-content', 
+      '.review-text', 
+      '.reviewText',
+      '[itemprop="reviewBody"]',
+      '.yotpo-read-more-text',
+      '.jdgm-rev__body',
+      'div.t-ZTKy', // Flipkart review text
+      'div.ZmyFLE'
+    ];
+    
+    // If we can't find a specific text container, we'll fall back to evaluating the entire block
+    const bodyEl = block.querySelector(textSelectors.join(', ')) || block;
+    if (!bodyEl) {
+      block.dataset.veridexScanned = "true";
+      continue;
+    }
+
+    let text = bodyEl.innerText || bodyEl.textContent || "";
+    text = text.trim();
+
+    if (text.length < 20) {
+      block.dataset.veridexScanned = "true";
+      continue;
+    }
+
+    block.dataset.veridexScanned = "pending";
+
+    if (!isContextAlive()) return;
+    chrome.runtime.sendMessage({ type: "SCAN_TEXT", text: text, scanType: "review" }, (resp) => {
+      block.dataset.veridexScanned = "true";
+      if (resp && resp.success) {
+        injectReviewBadge(block, resp.data, text);
+      }
+    });
+  }
+}
+
 function init() {
   const isGmail   = window.location.hostname === "mail.google.com";
   const isOutlook = /outlook\.(live|office)\.com/.test(window.location.hostname) ||
@@ -535,6 +708,9 @@ function init() {
     if (isGmail)   sweepGmail();
     if (isOutlook) sweepOutlook();
     if (isWhatsApp) scanWhatsApp();
+    
+    // Always attempt to scan for e-commerce reviews
+    scanEcommerceReviews();
     
     scanGlobalLinks();
   }, 800);

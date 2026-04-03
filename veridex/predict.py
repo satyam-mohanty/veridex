@@ -39,6 +39,13 @@ sms_vec = load_pkl(os.path.join(MODELS_DIR, "vectorizer_sms.pkl"))
 url_model = load_pkl(os.path.join(MODELS_DIR, "url_model.pkl"))
 url_vec = load_pkl(os.path.join(MODELS_DIR, "vectorizer_url.pkl"))
 
+try:
+    review_model = load_pkl(os.path.join(MODELS_DIR, "review_model.pkl"))
+    review_vec = load_pkl(os.path.join(MODELS_DIR, "vectorizer_review.pkl"))
+except Exception as e:
+    review_model = None
+    review_vec = None
+
 TRUSTED_DOMAINS = {
     "google.com",
     "google.co.in",
@@ -56,6 +63,7 @@ TRUSTED_DOMAINS = {
     "amazon.com",
     "amazon.in",
     "amazonaws.com",
+    "flipkart.com",
     "netflix.com",
     "youtube.com",
     "youtu.be",
@@ -196,6 +204,31 @@ def predict_url(url: str) -> dict:
     return {"label": label, "confidence": confidence, "suspicious_features": []}
 
 
+def predict_review(text: str) -> dict:
+    if not review_model or not review_vec:
+        # Fallback or error
+        return {
+            "label": "legitimate",
+            "confidence": 0.5,
+            "top_keywords": []
+        }
+    
+    cleaned = _clean_text(text)
+    vec = review_vec.transform([cleaned])
+
+    label_idx = review_model.predict(vec)[0]
+    probs = review_model.predict_proba(vec)[0]
+
+    label = "fake" if label_idx == 1 else "genuine"
+    confidence = float(probs[label_idx])
+
+    return {
+        "label": label,
+        "confidence": confidence,
+        "top_keywords": _find_keywords(text),
+    }
+
+
 if __name__ == "__main__":
     print("=== Testing predict.py ===\n")
 
@@ -216,4 +249,9 @@ if __name__ == "__main__":
     url_res = predict_url(url_sample)
     print(f"Result: {url_res}\n")
 
-    print("All tests passed.")
+    review_sample = "Extremely disappointed. This did not look like what pictures portrayed online. Smells musty."
+    print(f"Testing Review: '{review_sample}'")
+    review_res = predict_review(review_sample)
+    print(f"Result: {review_res}\n")
+
+    print("All tests passed!") # Triggering uvicorn reload
